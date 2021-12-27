@@ -1,1 +1,1 @@
-from notioncli.cli import main
+from notioncli.cli import cli

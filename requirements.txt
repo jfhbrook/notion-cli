@@ -1,3 +1,4 @@
+click==8.0.3
 notion==0.0.28
 termcolor==1.1.0
 black==21.12b0
