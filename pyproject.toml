@@ -12,7 +12,8 @@ readme = "README.md"
 dependencies = [
   "click",
   "notion",
-  "termcolor"
+  "termcolor",
+  "toml"
 ]
 
 [tool.black]
