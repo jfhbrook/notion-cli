@@ -18,7 +18,7 @@ dependencies = [
 line-length = 88
 
 [tool.isort]
-profile = "google"
+profile = "appnexus"
 known_first_party = []
 known_application = [ "notioncli" ]
 
