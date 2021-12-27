@@ -8,6 +8,7 @@ from notion.client import NotionClient
 from termcolor import colored, cprint
 
 from notioncli.config import Config
+from notioncli.ctx import Context
 
 
 class TasksType(click.ParamType):
@@ -21,26 +22,6 @@ class TasksType(click.ParamType):
 
 
 TASKS = TasksType()
-
-
-class Context:
-    def __init__(self):
-        self.config = Config.from_file()
-        self._client = None
-        self._page = None
-
-    @property
-    def client(self):
-        if not self._client:
-            self.config.validate()
-            self._client = NotionClient(token_v2=self.config.token, monitor=False)
-        return self._client
-
-    @property
-    def page(self):
-        if not self._page:
-            self._page = self.client.get_block(self.config.page)
-        return self._page
 
 
 @click.group(help="A Notion.so CLI focused on simple task management")
@@ -67,8 +48,7 @@ def init(ctx):
         default=config.page or "https://notion.so/<page>",
     )
 
-    config = config.set(token=token, page=page)
-    ctx.obj["CONFIG"] = config
+    ctx.obj.config = config.set(token=token, page=page)
 
     cprint(f"Configuration written to {config.config_file}")
 
@@ -84,12 +64,12 @@ def show(ctx):
         cprint(f"{field.name}: {getattr(config, field.name) or '<unset>'}", "green")
 
 
-@config.command()
+@config.command(help="Set a configuration field")
 @click.argument("key")
 @click.argument("value")
 @click.pass_context
 def set(ctx, key, value):
-    ctx.obj.config = ctx.obj.config.set(key, value)
+    ctx.obj.config = ctx.obj.config.set(**{key: value})
     cprint(f"{key}='{value}'", "green")
 
 

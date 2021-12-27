@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass, replace
+from dataclasses import asdict, dataclass, fields, replace
 import os
 import os.path
 from pathlib import Path
@@ -13,6 +13,9 @@ class ConfigError(ValueError):
     pass
 
 
+ENV_VARS = {"config_file": "NOTION_CONFIG"}
+
+
 @dataclass
 class Config:
     config_file: Path
@@ -24,7 +27,7 @@ class Config:
 
     @classmethod
     def from_file(cls):
-        config_file = Path(os.environ.get("NOTION_CONFIG", DEFAULT_CONFIG_FILE))
+        config_file = Path(os.environ.get(ENV_VARS["config_file"], DEFAULT_CONFIG_FILE))
         try:
             with open(config_file, "r") as f:
                 config = toml.load(f)
@@ -37,16 +40,20 @@ class Config:
             page=config.get("page", None),
         )
 
+    def _asdict(self):
+        return {
+            k: v
+            for k, v in asdict(self).items()
+            if k not in ENV_VARS
+        }
+
     def set(self, **kwargs):
-        # TODO: Warn about this?
-        if "config_file" in kwargs:
-            kwargs.pop("config_file")
         config = replace(self, **kwargs)
 
         os.makedirs(self.config_file.parent, exist_ok=True)
 
         with open(self.config_file, "w") as f:
-            toml.dump(asdict(config), f)
+            toml.dump(config._asdict(), f)
 
         return config
 
@@ -55,3 +62,11 @@ class Config:
             raise ConfigError("Missing notion token")
         if not self.page:
             raise ConfigError("Missing notion page")
+
+    def _repr_markdown_(self):
+        md = "## Configuration\n\n"
+
+        for field in fields(self):
+            md += f"* **{field.name}**: {getattr(self, field.name) or '<unset>'}\n"
+
+        return md

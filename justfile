@@ -5,3 +5,6 @@ setup:
 
 format:
 	source ./venv/bin/activate && isort . && black .
+
+jupyterlab:
+  source ./venv/bin/activate && jupyter lab

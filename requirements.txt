@@ -2,5 +2,6 @@ click==8.0.3
 notion==0.0.28
 termcolor==1.1.0
 toml==0.10.2
+jupyterlab==3.2.5
 black==21.12b0
 isort==5.10.1
