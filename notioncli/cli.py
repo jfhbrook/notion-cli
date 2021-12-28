@@ -5,10 +5,17 @@ import sys
 import click
 from notion.block import TodoBlock
 from notion.client import NotionClient
+from pygments import highlight
+from pygments.lexers import MarkdownLexer
+from pygments.formatters import Terminal256Formatter
 from termcolor import colored, cprint
 
 from notioncli.config import Config
 from notioncli.ctx import Context
+
+
+def pprint_md(obj):
+    print(highlight(obj._repr_markdown_(), MarkdownLexer(), Terminal256Formatter()))
 
 
 class TasksType(click.ParamType):
@@ -54,10 +61,7 @@ def init(ctx):
 @config.command(help="Show the current configuration")
 @click.pass_context
 def show(ctx):
-    cprint("\n Configuration: \n", "white", attrs=["underline"])
-
-    for field in fields(ctx.obj.config):
-        cprint(f"{field.name}: {getattr(ctx.obj.config, field.name) or '<unset>'}", "green")
+    pprint_md(ctx.obj.config)
 
 
 @config.command(help="Set a configuration field")

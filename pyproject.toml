@@ -12,6 +12,7 @@ readme = "README.md"
 dependencies = [
   "click",
   "notion",
+  "Pygments",
   "termcolor",
   "toml"
 ]
