@@ -38,17 +38,15 @@ def config():
 @config.command(help="Initialize the configuration")
 @click.pass_context
 def init(ctx):
-    config = ctx.obj.config
-
     token = click.prompt(
-        "Notion API token (from the browser cookie)", default=config.token or "<unset>"
+        "Notion API token (from the browser cookie)", default=ctx.obj.config.token or "<unset>"
     )
     page = click.prompt(
         "Notion page (from the browser location bar)",
-        default=config.page or "https://notion.so/<page>",
+        default=ctx.obj.config.page or "https://notion.so/<page>",
     )
 
-    ctx.obj.config = config.set(token=token, page=page)
+    ctx.obj.set_config(token=token, page=page)
 
     cprint(f"Configuration written to {config.config_file}")
 
@@ -56,12 +54,10 @@ def init(ctx):
 @config.command(help="Show the current configuration")
 @click.pass_context
 def show(ctx):
-    config = ctx.obj.config
-
     cprint("\n Configuration: \n", "white", attrs=["underline"])
 
-    for field in fields(config):
-        cprint(f"{field.name}: {getattr(config, field.name) or '<unset>'}", "green")
+    for field in fields(ctx.obj.config):
+        cprint(f"{field.name}: {getattr(ctx.obj.config, field.name) or '<unset>'}", "green")
 
 
 @config.command(help="Set a configuration field")
@@ -69,7 +65,7 @@ def show(ctx):
 @click.argument("value")
 @click.pass_context
 def set(ctx, key, value):
-    ctx.obj.config = ctx.obj.config.set(**{key: value})
+    ctx.obj.set_config(**{key: value})
     cprint(f"{key}='{value}'", "green")
 
 

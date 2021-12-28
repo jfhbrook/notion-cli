@@ -1,6 +1,19 @@
+from dataclasses import dataclass
 from notion.client import NotionClient
 
 from notioncli.config import Config
+
+
+@dataclass
+class SubHeader:
+    title: str
+
+
+@dataclass
+class Task:
+    id: int
+    title: str
+    checked: bool
 
 
 class Context:
@@ -21,3 +34,6 @@ class Context:
         if not self._page:
             self._page = self.client.get_block(self.config.page)
         return self._page
+
+    def set_config(self, **kwargs):
+        self.config = self.config.set(**kwargs)
