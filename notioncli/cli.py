@@ -6,8 +6,8 @@ import click
 from notion.block import TodoBlock
 from notion.client import NotionClient
 from pygments import highlight
-from pygments.lexers import MarkdownLexer
 from pygments.formatters import Terminal256Formatter
+from pygments.lexers import MarkdownLexer
 from termcolor import colored, cprint
 
 from notioncli.config import Config
@@ -46,7 +46,8 @@ def config():
 @click.pass_context
 def init(ctx):
     token = click.prompt(
-        "Notion API token (from the browser cookie)", default=ctx.obj.config.token or "<unset>"
+        "Notion API token (from the browser cookie)",
+        default=ctx.obj.config.token or "<unset>",
     )
     page = click.prompt(
         "Notion page (from the browser location bar)",

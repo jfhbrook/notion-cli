@@ -41,11 +41,7 @@ class Config:
         )
 
     def _asdict(self):
-        return {
-            k: v
-            for k, v in asdict(self).items()
-            if k not in ENV_VARS
-        }
+        return {k: v for k, v in asdict(self).items() if k not in ENV_VARS}
 
     def set(self, **kwargs):
         config = replace(self, **kwargs)

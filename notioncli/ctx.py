@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from notion.client import NotionClient
 
 from notioncli.config import Config
